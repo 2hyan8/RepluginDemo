@@ -1,0 +1,4 @@
+include ':plugin2'
+include ':plugin1'
+include ':host'
+rootProject.name = "RePluginDemo"
