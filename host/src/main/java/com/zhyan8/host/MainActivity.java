@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread() {
             @Override
             public void run() {
-                String urlPath = "https://raw.githubusercontent.com/ZhangZeQiao/ImagePluginDemo/7c5866db83b57c455302fac12ea72af30d9a5364/app/src/main/assets/image.apk";
+                String urlPath = "https://github.com/2hyan8/RepluginDemo/blob/main/plugin2/src/main/res/raw/plugin2.apk";
                 DownLoadUtils.download(urlPath);
             }
         }.start();
