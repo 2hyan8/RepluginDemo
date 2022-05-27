@@ -17,7 +17,7 @@
         android:id="@+id/btn_inner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="打开内置插件页面"
+        android:text="内置插件页面"
         android:textSize="30dp"/>
 
     <LinearLayout
@@ -38,10 +38,17 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/btn_install"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="安装外置插件"
+        android:textSize="30dp"/>
+
+    <Button
         android:id="@+id/btn_outer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="打开外置插件页面"
+        android:text="外置插件页面"
         android:textSize="30dp"/>
 
 </LinearLayout>

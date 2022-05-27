@@ -1,6 +1,8 @@
-package com.zhyan8.host;
+package com.zhyan8.host.utils;
 
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.qihoo360.replugin.RePlugin;
@@ -16,61 +18,57 @@ import java.net.URL;
 import java.net.URLConnection;
 
 public class DownLoadUtils {
+    private static final String TAG = "DownLoadUtils";
 
-    public static void download(String urlPath) {
-        // 插件下载后的存放路径
+    public static void download(String urlPath, Handler handler) {
         String downloadDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-//        String downloadDir = Environment.getRootDirectory().getAbsolutePath();
-        File file = null;
         try {
-            // 统一资源
             URL url = new URL(urlPath);
-            // 连接类的父类，抽象类
             URLConnection urlConnection = url.openConnection();
-            // http的连接类
             HttpURLConnection httpURLConnection = (HttpURLConnection) urlConnection;
-            // 设定请求的方法，默认是GET
             httpURLConnection.setRequestMethod("GET");
-            // 设置字符编码
             httpURLConnection.setRequestProperty("Charset", "UTF-8");
-            // 打开到此 URL 引用的资源的通信链接（如果尚未建立这样的连接）。
+            Log.v(TAG, "before connect");
             httpURLConnection.connect();
-
-            // 文件大小
+            Log.v(TAG, "after connect");
             int fileLength = httpURLConnection.getContentLength();
-            // 文件名
             String filePathUrl = httpURLConnection.getURL().getFile();
             String fileFullName = filePathUrl.substring(filePathUrl.lastIndexOf(File.separatorChar) + 1);
-
-            URLConnection con = url.openConnection();
             BufferedInputStream bin = new BufferedInputStream(httpURLConnection.getInputStream());
-
             String path = downloadDir + File.separatorChar + fileFullName;
-            file = new File(path);
+            File file = new File(path);
+            if (file.exists()) {
+                Log.v(TAG, "文件已存在， 无需下载");
+                return;
+            }
             if (!file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();
             }
             OutputStream out = new FileOutputStream(file);
             int size = 0;
-            int len = 0;
+            float progress = 0;
             byte[] buf = new byte[1024];
             while ((size = bin.read(buf)) != -1) {
-                len += size;
                 out.write(buf, 0, size);
-                // 下载百分比
-                Log.v("xq", "下载了-------> " + len * 100 / fileLength);
+                progress += size * 100.0 / fileLength;
+                Log.v(TAG, "下载了-------> " + (int) progress);
             }
             bin.close();
             out.close();
-            // 升级安装插件新版本
-            RePlugin.install(path);
-            Log.v("xq", "下载完成 : " + path);
+            sendMsg(String.valueOf((int) progress), handler);
+            Log.v(TAG, "下载完成 : " + path);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            Log.v(TAG, e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.v(TAG, e.getMessage());
         } finally {
-
+            Log.v(TAG, "finally");
         }
+    }
+
+    private static void sendMsg(String str, Handler handler) {
+        Message msg = handler.obtainMessage();
+        msg.obj = str;
+        handler.sendMessage(msg);
     }
 }
