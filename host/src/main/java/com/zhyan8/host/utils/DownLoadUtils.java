@@ -20,8 +20,7 @@ import java.net.URLConnection;
 public class DownLoadUtils {
     private static final String TAG = "DownLoadUtils";
 
-    public static void download(String urlPath, Handler handler) {
-        String downloadDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+    public static void download(String urlPath, Handler handler, String downloadDir) {
         try {
             URL url = new URL(urlPath);
             URLConnection urlConnection = url.openConnection();

@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread() {
             @Override
             public void run() {
-                DownLoadUtils.download(urlPath, mHandler);
+                DownLoadUtils.download(urlPath, mHandler, mStorageDir);
             }
         }.start();
     }
