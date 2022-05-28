@@ -51,11 +51,11 @@ public class DownLoadUtils {
             while ((size = bin.read(buf)) != -1) {
                 out.write(buf, 0, size);
                 progress += size * 100.0 / fileLength;
-                Log.v(TAG, "下载了-------> " + (int) progress);
+                sendMsg(String.valueOf(Math.round(progress)), handler);
+                Log.v(TAG, "下载了-------> " + Math.round(progress));
             }
             bin.close();
             out.close();
-            sendMsg(String.valueOf((int) progress), handler);
             Log.v(TAG, "下载完成 : " + path);
         } catch (MalformedURLException e) {
             Log.v(TAG, e.getMessage());

@@ -20,7 +20,10 @@ public class FileUtils {
                 Log.e("--Method--", "copyFile:  oldFile cannot read.");
                 return false;
             }
-
+            File newFile = new File(newPath);
+            if (!newFile.getParentFile().exists()) {
+                newFile.getParentFile().mkdir();
+            }
             FileInputStream fileInputStream = new FileInputStream(oldPath);    //读入原文件
             FileOutputStream fileOutputStream = new FileOutputStream(newPath);
             byte[] buffer = new byte[1024];

@@ -3,6 +3,7 @@ package com.zhyan8.host;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.zhyan8.host.utils.PermissionUtils;
 import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
+    private String mStorageDir;
     private Button btn_inner;
     private Button btn_download;
     private TextView tv_progress;
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         btn_install.setOnClickListener(listener);
         btn_outer.setOnClickListener(listener);
         PermissionUtils.verifyStoragePermissions(this);
+        mStorageDir = Environment.getExternalStorageDirectory().getAbsolutePath();
     }
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -50,10 +53,12 @@ public class MainActivity extends AppCompatActivity {
                             RePlugin.createIntent("com.zhyan8.plugin1", "com.zhyan8.plugin1.MainActivity"));
                     break;
                 case R.id.btn_download:
-                    download();
+                    String urlPath = "https://github.com/2hyan8/RepluginDemo/raw/main/plugin2/src/main/res/raw/plugin2.apk";
+                    download(urlPath);
                     break;
                 case R.id.btn_install:
-                    install();
+                    String apkName = "plugin2.apk";
+                    install(apkName);
                     break;
                 case R.id.btn_outer:
                      RePlugin.startActivity(MainActivity.this,
@@ -63,24 +68,18 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void download() {
+    private void download(final String urlPath) {
         new Thread() {
             @Override
             public void run() {
-                String urlPath = "https://github.com/2hyan8/RepluginDemo/raw/main/plugin2/src/main/res/raw/plugin2.apk";
                 DownLoadUtils.download(urlPath, mHandler);
             }
         }.start();
     }
 
-    private void install() {
-        String sourceFilePath = "/storage/emulated/0/plugin2.apk";
-        String targetFilePath = "/storage/emulated/0/temp/plugin2.apk";
-        String targetDirPath = "/storage/emulated/0/temp/";
-        File targetDir = new File(targetDirPath);
-        if (!targetDir.exists()) {
-            targetDir.mkdir();
-        }
+    private void install(String apkName) {
+        String sourceFilePath = mStorageDir + File.separatorChar + apkName;
+        String targetFilePath = mStorageDir + File.separatorChar + "temp" + File.separatorChar + apkName;
         FileUtils.copyFile(sourceFilePath, targetFilePath);
         PluginInfo pi = RePlugin.install(targetFilePath);
         if (pi != null) {
