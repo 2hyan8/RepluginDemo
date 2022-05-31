@@ -3,7 +3,6 @@ package com.zhyan8.host;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -15,9 +14,9 @@ import com.qihoo360.replugin.RePlugin;
 import com.qihoo360.replugin.model.PluginInfo;
 import com.zhyan8.host.utils.DownLoadUtils;
 import com.zhyan8.host.utils.FileUtils;
-import com.zhyan8.host.utils.PermissionUtils;
 
 import java.io.File;
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     private String mStorageDir;
@@ -40,8 +39,12 @@ public class MainActivity extends AppCompatActivity {
         btn_download.setOnClickListener(listener);
         btn_install.setOnClickListener(listener);
         btn_outer.setOnClickListener(listener);
-        PermissionUtils.verifyStoragePermissions(this);
-        mStorageDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+        File fileDir = getExternalFilesDir(null);
+        try {
+            mStorageDir = fileDir.getCanonicalPath(); //mStorageDir:/storage/emulated/0/Android/data/com.zhyan8.host/files/
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     View.OnClickListener listener = new View.OnClickListener() {
